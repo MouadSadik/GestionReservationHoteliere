@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include<stdlib.h>
 
 
 
@@ -33,27 +33,27 @@ void Menu_General()
         {
 	        case 0:
 	            printf("\n Sortie du programme");
-	            exit(0);
+				exit(0);
 	        case 1:
-	            Menu_Clients();
+	            //Menu_Clients();
 	            break;
 	        case 2:
-	            Menu_Chambres();
+	            //Menu_Chambres();
 	            break;
 	        case 3:
-	            Menu_Hotels();
+	           // Menu_Hotels();
 	            break;
 	        case 4:
-	            Menu_Factures();
+	           // Menu_Factures();
 	            break;
 	        case 5:
-	            Menu_Reservations();
+	           // Menu_Reservations();
 	            break;
 	        case 6:
-	            Menu_Avis() ;
+	            //Menu_Avis() ;
 	            break;
 	        case 7:
-	        	Menu_Nourritures();
+	        	//Menu_Nourritures();
 	        	break;
 	        default:
 	            printf("\n Saisir une option entre 0 et 6\n");
@@ -62,40 +62,7 @@ void Menu_General()
 }
 }
 
-void Clients()
-{
-	
-}
 
-void Chambres()
-{
-	
-}
-
-void Hotels()
-{
-	
-}
-
-void Factures()
-{
-	
-}
-
-void Reservations()
-{
-	
-}
-
-void Avis()
-{
-	
-}
-
-void Menu_Nourritures()
-{
-	
-}
 
 int main()
 {
