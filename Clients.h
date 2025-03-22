@@ -12,3 +12,4 @@ struct client {
     Date Date_Naissance;
 };
 typedef struct client Client;
+
