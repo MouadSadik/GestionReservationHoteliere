@@ -10,6 +10,7 @@ struct client {
     int Code_Postale;
     char *Ville_Client;
     Date Date_Naissance;
+    struct client *suivant;
 };
 typedef struct client Client;
 
