@@ -1,0 +1,2 @@
+0$Hotel Plaza$123 Main St$Paris$France+33 1 23 45 67 89$contact@hotelplaza.com$http://hotelplaza.com$4
+1$Grand Hotel$456 Park Ave$New York$USA123-456-7890$info@grandhotel@gmail.com$http://grandhotel.com$5

@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "Client.C": "cpp"
+        "Client.C": "cpp",
+        "chaine.h": "c"
     }
 }
