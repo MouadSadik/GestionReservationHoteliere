@@ -56,10 +56,10 @@ void SaisirClient(Client * clt)
         printf("\n=> Saisir le prénom du client : ") ; 
         clt->Prenom = SaisirChaine() ; 
 
-        printf("\n=> Saisir l'Email du client : ") ; 
+        printf("\n=> Saisir lEmail du client : ") ; 
         clt->Email = SaisirChaine() ; 
 
-        printf("\n=> Saisir l'Adresse du client : ") ; 
+        printf("\n=> Saisir lAdresse du client : ") ; 
         clt->Adresse = SaisirChaine() ; 
 
         printf("\n=> Saisir la Nationalite du client : ") ; 
@@ -67,6 +67,9 @@ void SaisirClient(Client * clt)
 
         printf("\n=> Saisir le Code Postale du client : ") ; 
         scanf("%d",clt->Code_Postale);
+
+        printf("\n=> Saisir la Ville du client : ") ; 
+        clt->Ville_Client = SaisirChaine() ;
 
         printf("\n\t Saisir la date de naissance jj/mm/aaaa : ") ; 
         scanf("%u/%u/%u", &(clt->Date_Naissance.j), &(clt->Date_Naissance.m), &(clt->Date_Naissance.a)) ; 
@@ -170,10 +173,10 @@ void ModifierClient(int code)
     printf("\n=> Saisir le prénom du client : ") ;
     u->Prenom = SaisirChaine() ; 
 
-    printf("\n=> Saisir l'Email du client : ") ; 
+    printf("\n=> Saisir lEmail du client : ") ; 
     u->Email = SaisirChaine() ; 
 
-    printf("\n=> Saisir l'Adresse du client : ") ; 
+    printf("\n=> Saisir lAdresse du client : ") ; 
     u->Adresse = SaisirChaine() ; 
 
     printf("\n=> Saisir la Nationalite du client : ") ; 
@@ -182,8 +185,30 @@ void ModifierClient(int code)
     printf("\n=> Saisir le Code Postale du client : ") ; 
     scanf("%d",u->Code_Postale);
 
+    printf("\n=> Saisir la Ville du client : ") ; 
+    u->Ville_Client = SaisirChaine() ;
+
     printf("\n\t Saisir la date de naissance jj/mm/aaaa : ") ; 
     scanf("%u/%u/%u", &(u->Date_Naissance.j), &(u->Date_Naissance.m), &(u->Date_Naissance.a)) ;
 }
 
+void sauvegarder_LSC() {
+    FILE *pf = fopen("client_data.txt", "w");
+
+    if (pf == NULL) {
+        perror("Erreur lors de l'ouverture du fichier");
+        return;
+    }
+
+    int i;
+    Client *u;
+    for (u = DL ; u->suivant != NULL ; u = u->suivant) {
+        fprintf(pf, "%d#%s#%s#%s#%s#%s#%d#%s#%u/%u/%u\n", u->id_Client, u->Nom, u->Prenom, u->Email, u->Adresse, u->Nationalite, u->Code_Postale, u->Ville_Client, u->Date_Naissance.j, u->Date_Naissance.m, u->Date_Naissance.a);
+    }
+	fprintf(pf, "%d#%s#%s#%s#%s#%s#%d#%s#%u/%u/%u", u->id_Client, u->Nom, u->Prenom, u->Email, u->Adresse, u->Nationalite, u->Code_Postale, u->Ville_Client, u->Date_Naissance.j, u->Date_Naissance.m, u->Date_Naissance.a);
+   
+
+    fclose(pf);
+    printf("\nLes données ont été sauvegardées dans le fichier.\n");
+}
 
