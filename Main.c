@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include<stdlib.h>
-
+#include"Reservation.h"
 
 
 
@@ -47,7 +47,7 @@ void Menu_General()
 	           // Menu_Factures();
 	            break;
 	        case 5:
-	           // Menu_Reservations();
+				Menu_Res();
 	            break;
 	        case 6:
 	            //Menu_Avis() ;
