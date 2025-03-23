@@ -1,4 +1,4 @@
-#include<Date.h>
+#include"Date.h"
 
 struct reservation {
     int id_Reservation;
@@ -11,3 +11,5 @@ struct reservation {
     float Prix_Total;
 };
 typedef struct reservation Reservation;
+
+int Menu_Res();

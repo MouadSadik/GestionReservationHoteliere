@@ -1,7 +1,7 @@
 #include<stdio.h>
-#include<Date.h>
-#include<AvisClient.h>
+#include"Date.h"
+#include"AvisClient.h"
 
 static unsigned int NB_AvisClient = 0 ; 
 static unsigned int CAvisClient = 0 ;
-static AvisClient * TAvisClient = NULL ;
+static AvisClilnet * TAvisClient = NULL ;
