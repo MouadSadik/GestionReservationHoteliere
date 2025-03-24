@@ -44,7 +44,7 @@ void Menu_General()
 	           // Menu_Hotels();
 	            break;
 	        case 4:
-	           // Menu_Factures();
+				Menu_Facture();
 	            break;
 	        case 5:
 				Menu_Res();

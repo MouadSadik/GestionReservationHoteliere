@@ -1,13 +1,12 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include"Reservation.h"
-#include"Clients.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "Date.h"
+#include "Reservation.h"
+#include "Clients.h"
 
-
-static unsigned int NB_Reservation = 0 ; 
-static unsigned int CReservation = 0 ; 
-static Reservation * TReservation = NULL ;
-
+static unsigned int NB_Reservation = 0;
+static unsigned int CReservation = 0;
+static Reservation *TReservation = NULL;
 
 // Ajouter une reservation
 void ajouterReservation(Reservation nouvelleReservation) {
@@ -22,18 +21,14 @@ void ajouterReservation(Reservation nouvelleReservation) {
     printf("Reservation ajoutee avec succes.\n");
 }
 
-// Afficher toutes les reservations
+// Afficher les reservations
 void afficherReservations() {
     for (int i = 0; i < NB_Reservation; i++) {
-        printf("ID Reservation: %d | ID Chambre: %d | ID Nourriture: %d | ID Client: %d | Nombre de personnes: %d | Arrivee: %d/%d/%d | Depart: %d/%d/%d | Prix Total: %.2f\n",
+        printf("ID Reservation: %d | ID Chambre: %d | ID Nourriture: %d | ID Client: %d\n",
                TReservation[i].id_Reservation,
                TReservation[i].id_Chambre,
                TReservation[i].id_Nourriture,
-               TReservation[i].id_Client,
-               TReservation[i].Nombre_Personnes,
-               TReservation[i].Date_Arrive.j, TReservation[i].Date_Arrive.m, TReservation[i].Date_Arrive.a,
-               TReservation[i].Date_Depart.j, TReservation[i].Date_Depart.m, TReservation[i].Date_Depart.a,
-               TReservation[i].Prix_Total);
+               TReservation[i].id_Client);
     }
 }
 
@@ -44,7 +39,23 @@ int rechercherReservation(int id) {
             return i;
         }
     }
-    return -1; // Retourne -1 si non trouve
+    return -1;
+}
+
+// Modifier une reservation
+void modifierReservation(int id) {
+    int index = rechercherReservation(id);
+    if (index != -1) {
+        printf("Nouveau nombre de personnes : ");
+        scanf("%d", &TReservation[index].Nombre_Personnes);
+        printf("Nouvelle date d'arrivee (jj mm aaaa) : ");
+        scanf("%d %d %d", &TReservation[index].Date_Arrive.j, &TReservation[index].Date_Arrive.m, &TReservation[index].Date_Arrive.a);
+        printf("Nouvelle date de depart (jj mm aaaa) : ");
+        scanf("%d %d %d", &TReservation[index].Date_Depart.j, &TReservation[index].Date_Depart.m, &TReservation[index].Date_Depart.a);
+        printf("Reservation modifiee avec succes.\n");
+    } else {
+        printf("Reservation introuvable.\n");
+    }
 }
 
 // Supprimer une reservation
@@ -62,88 +73,79 @@ void supprimerReservation(int id) {
     }
 }
 
+// Sauvegarder les reservations dans un fichier texte
+void sauvegarderReservationsDansFichier() {
+    FILE *fichier = fopen("reservations.txt", "w");
+    if (fichier == NULL) {
+        printf("Erreur lors de l'ouverture du fichier.\n");
+        return;
+    }
+    for (int i = 0; i < NB_Reservation; i++) {
+        fprintf(fichier, "%d %d %d %d %d %d/%d/%d %d/%d/%d %.2f\n",
+                TReservation[i].id_Reservation,
+                TReservation[i].id_Chambre,
+                TReservation[i].id_Nourriture,
+                TReservation[i].id_Client,
+                TReservation[i].Nombre_Personnes,
+                TReservation[i].Date_Arrive.j, TReservation[i].Date_Arrive.m, TReservation[i].Date_Arrive.a,
+                TReservation[i].Date_Depart.j, TReservation[i].Date_Depart.m, TReservation[i].Date_Depart.a,
+                TReservation[i].Prix_Total);
+    }
+    fclose(fichier);
+    printf("Reservations sauvegardees avec succes dans 'reservations.txt'.\n");
+}
 
+// Menu Reservation
+void Menu_Reservation() {
+    int choix, id;
+    Reservation nouvelleReservation;
 
-
-
-
-
-
-int Menu_Res() {
-    int choix;
     do {
-        printf("\n--- Menu de Gestion des Reservations ---\n");
+        printf("\n--- MENU RESERVATION ---\n");
         printf("1. Ajouter une reservation\n");
-        printf("2. Afficher toutes les reservations\n");
-        printf("3. Rechercher une reservation\n");
+        printf("2. Afficher les reservations\n");
+        printf("3. Modifier une reservation\n");
         printf("4. Supprimer une reservation\n");
-        printf("5. Quitter\n");
-        printf("Entrez votre choix: ");
+        printf("5. Sauvegarder les reservations\n");
+        printf("6. Quitter\n");
+        printf("Votre choix : ");
         scanf("%d", &choix);
 
-        switch(choix) {
-            case 1: {
-                // Ajouter une reservation
-                Reservation r1;
-                printf("Entrez l'ID de la reservation: ");
-                scanf("%d", &r1.id_Reservation);
-                printf("Entrez l'ID de la chambre: ");
-                scanf("%d", &r1.id_Chambre);
-                printf("Entrez l'ID de la nourriture: ");
-                scanf("%d", &r1.id_Nourriture);
-                printf("Entrez l'ID du client: ");
-                scanf("%d", &r1.id_Client);
-                printf("Entrez le nombre de personnes: ");
-                scanf("%d", &r1.Nombre_Personnes);
-                printf("Entrez la date d'arrivee (jour mois annee): ");
-                scanf("%d %d %d", &r1.Date_Arrive.j, &r1.Date_Arrive.m, &r1.Date_Arrive.a);
-                printf("Entrez la date de depart (jour mois annee): ");
-                scanf("%d %d %d", &r1.Date_Depart.j, &r1.Date_Depart.m, &r1.Date_Depart.a);
-                printf("Entrez le prix total: ");
-                scanf("%lf", &r1.Prix_Total);
-
-                ajouterReservation(r1);
+        switch (choix) {
+            case 1:
+                printf("ID Reservation : "); scanf("%d", &nouvelleReservation.id_Reservation);
+                printf("ID Chambre : "); scanf("%d", &nouvelleReservation.id_Chambre);
+                printf("ID Nourriture : "); scanf("%d", &nouvelleReservation.id_Nourriture);
+                printf("ID Client : "); scanf("%d", &nouvelleReservation.id_Client);
+                printf("Nombre de personnes : "); scanf("%d", &nouvelleReservation.Nombre_Personnes);
+                printf("Date d'arrivee (jj mm aaaa) : ");
+                scanf("%d %d %d", &nouvelleReservation.Date_Arrive.j, &nouvelleReservation.Date_Arrive.m, &nouvelleReservation.Date_Arrive.a);
+                printf("Date de depart (jj mm aaaa) : ");
+                scanf("%d %d %d", &nouvelleReservation.Date_Depart.j, &nouvelleReservation.Date_Depart.m, &nouvelleReservation.Date_Depart.a);
+                printf("Prix total : "); scanf("%f", &nouvelleReservation.Prix_Total);
+                ajouterReservation(nouvelleReservation);
                 break;
-            }
             case 2:
-                // Afficher toutes les reservations
-                printf("\n--- Liste des reservations ---\n");
                 afficherReservations();
                 break;
-            case 3: {
-                // Recherche d'une reservation
-                int idRecherche;
-                printf("Entrez l'ID de la reservation a rechercher: ");
-                scanf("%d", &idRecherche);
-
-                int index = rechercherReservation(idRecherche);
-                if (index != -1) {
-                    printf("\nReservation ID %d trouvee a l'index %d.\n", idRecherche, index);
-                } else {
-                    printf("\nReservation ID %d non trouvee.\n", idRecherche);
-                }
+            case 3:
+                printf("ID Reservation a modifier : "); scanf("%d", &id);
+                modifierReservation(id);
                 break;
-            }
-            case 4: {
-                // Suppression d'une reservation
-                int idSuppression;
-                printf("Entrez l'ID de la reservation a supprimer: ");
-                scanf("%d", &idSuppression);
-
-                supprimerReservation(idSuppression);
+            case 4:
+                printf("ID Reservation a supprimer : "); scanf("%d", &id);
+                supprimerReservation(id);
                 break;
-            }
             case 5:
-                // Quitter
-                printf("Au revoir!\n");
+                sauvegarderReservationsDansFichier();
+                break;
+            case 6:
+                printf("Au revoir !\n");
                 break;
             default:
-                printf("Choix invalide. Veuillez reessayer.\n");
+                printf("Choix invalide, veuillez reessayer.\n");
         }
-    } while (choix != 5);
+    } while (choix != 6);
 
-    // Liberation de la memoire
     free(TReservation);
-
-    return 0;
 }

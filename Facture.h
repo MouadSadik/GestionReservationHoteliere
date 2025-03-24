@@ -9,3 +9,4 @@ struct facture {
 };
 typedef struct facture Facture;
 
+void Menu_Facture();
