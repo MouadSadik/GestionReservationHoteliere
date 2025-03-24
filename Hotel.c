@@ -4,9 +4,7 @@
 #include <string.h>
 #include "Chaine.h"
 
-static unsigned int NBHotel = 0;
-static unsigned int IdsHotel = 0;
-static Hotel *THotel = NULL;
+
 
 void ChargerHotelsDepuisFichier(const char *filename)
 {

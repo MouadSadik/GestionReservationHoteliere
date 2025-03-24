@@ -13,9 +13,10 @@ typedef struct hotel{
 }Hotel;
 
 
-static unsigned int NBHotel = 0 ; 
-static unsigned int CHotel= 0 ; 
-static Hotel * THotel = NULL ;
+static unsigned int NBHotel = 0;
+static unsigned int IdsHotel = 0;
+static Hotel *THotel = NULL;
+
 
 void Menu_Hotel();
 
