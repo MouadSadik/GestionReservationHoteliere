@@ -63,3 +63,36 @@ int ComparerDatesDecroissantes(Date d1, Date d2)
         
     return d2.j - d1.j ;
 }
+
+Date Str_Date(char *str) 
+{
+    Date d;
+    int n = 0;  
+    char temp[5];  
+    int i = 0;
+
+    while (str[i] != '\0') 
+	{
+        int j = 0;  
+
+        while (str[i] != '/' && str[i] != '\0') 
+		{
+            temp[j++] = str[i++];
+        }
+        temp[j] = '\0';
+
+        if (n == 0) {
+            d.j = atoi(temp);
+            n++;
+        } else if (n == 1) {
+            d.m = atoi(temp);
+            n++;
+        } else if (n == 2) {
+            d.a = atoi(temp);
+        }
+		
+        i++;
+    }
+
+    return d;
+}

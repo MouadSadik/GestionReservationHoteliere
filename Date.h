@@ -10,3 +10,4 @@ int IsDate(unsigned int, unsigned int, unsigned int) ;
 int IsStrDate(char * , const char );
 int ComparerDatesCroissantes(Date, Date) ;
 int ComparerDatesDecroissantes(Date, Date) ;
+Date Str_Date(char *);

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include<stdlib.h>
 #include"Reservation.h"
+#include "Clients.h"
 
 
 
@@ -35,7 +36,7 @@ void Menu_General()
 	            printf("\n Sortie du programme");
 				exit(0);
 	        case 1:
-	            //Menu_Clients();
+	            Menu_Clients();
 	            break;
 	        case 2:
 	            //Menu_Chambres();
@@ -67,7 +68,7 @@ void Menu_General()
 int main()
 {
 	printf("\nBienvenu dans le system de gestion hoteuliere\n");
-	
+	Menu_General();
 	
 	return 0;
 	
