@@ -4,8 +4,6 @@
 #include <string.h>
 #include "Chaine.h"
 
-
-
 void ChargerHotelsDepuisFichier(const char *filename)
 {
     FILE *file = fopen(filename, "r");
@@ -18,61 +16,42 @@ void ChargerHotelsDepuisFichier(const char *filename)
     char line[512];
     while (fgets(line, sizeof(line), file))
     {
-        // Allocate memory for the new hotel
         NBHotel++;
-        THotel = realloc(THotel, NBHotel * sizeof(Hotel));
-        if (THotel == NULL)
+        Hotel *temp = realloc(THotel, NBHotel * sizeof(Hotel));
+        if (temp == NULL)
         {
             printf("Erreur d'allocation mémoire.\n");
             fclose(file);
             return;
         }
+        THotel = temp;
 
-        // Parse the line
         char *token = strtok(line, "$");
-        THotel[NBHotel - 1].idHotel = atoi(token); // Get ID
+        if (token) THotel[NBHotel - 1].idHotel = atoi(token);
 
         token = strtok(NULL, "$");
-        THotel[NBHotel - 1].nomHotel = strdup(token); // Get Name
+        if (token) THotel[NBHotel - 1].nomHotel = strdup(token);
 
         token = strtok(NULL, "$");
-        THotel[NBHotel - 1].adresseHotel = strdup(token); // Get Address
+        if (token) THotel[NBHotel - 1].adresseHotel = strdup(token);
 
         token = strtok(NULL, "$");
-        THotel[NBHotel - 1].villeHotel = strdup(token); // Get City
+        if (token) THotel[NBHotel - 1].villeHotel = strdup(token);
 
         token = strtok(NULL, "$");
-        THotel[NBHotel - 1].paysHotel = strdup(token); // Get Country
+        if (token) THotel[NBHotel - 1].paysHotel = strdup(token);
 
         token = strtok(NULL, "$");
-        if (!IsPhoneNumber)
-        {
-            NBHotel--;
-            THotel = realloc(THotel, NBHotel * sizeof(Hotel));
-            return;
-        }
-        THotel[NBHotel - 1].telHotel = strdup(token); // Get Phone
+        if (token) THotel[NBHotel - 1].telHotel = strdup(token);
 
         token = strtok(NULL, "$");
-        if (!IsEmail)
-        {
-            NBHotel--;
-            THotel = realloc(THotel, NBHotel * sizeof(Hotel));
-            return;
-        }
-        THotel[NBHotel - 1].emailHotel = strdup(token); // Get Email
+        if (token) THotel[NBHotel - 1].emailHotel = strdup(token);
 
         token = strtok(NULL, "$");
-        if (!IsWebsite)
-        {
-            NBHotel--;
-            THotel = realloc(THotel, NBHotel * sizeof(Hotel));
-            return;
-        }
-        THotel[NBHotel - 1].siteWebHotel = strdup(token); // Get Website
+        if (token) THotel[NBHotel - 1].siteWebHotel = strdup(token);
 
         token = strtok(NULL, "$");
-        THotel[NBHotel - 1].nbrEtoil = atoi(token); // Get Stars
+        if (token) THotel[NBHotel - 1].nbrEtoil = atoi(token);
     }
 
     fclose(file);
@@ -81,14 +60,14 @@ void ChargerHotelsDepuisFichier(const char *filename)
 
 void AjouterHotel()
 {
-    NBHotel++;
-    Hotel *temp = realloc(THotel, NBHotel * sizeof(Hotel));
+    Hotel *temp = realloc(THotel, (NBHotel + 1) * sizeof(Hotel));
     if (temp == NULL)
     {
         printf("Erreur d'allocation mémoire.\n");
         return;
     }
     THotel = temp;
+    NBHotel++;
 
     THotel[NBHotel - 1].idHotel = IdsHotel++;
 
@@ -115,6 +94,7 @@ void AjouterHotel()
 
     printf("Nombre d'étoiles: ");
     scanf("%u", &THotel[NBHotel - 1].nbrEtoil);
+    getchar(); // Pour consommer le '\n' restant
 
     printf("Hôtel ajouté avec succès! ID: %u\n", THotel[NBHotel - 1].idHotel);
 }
@@ -127,7 +107,8 @@ void AfficherHotel(unsigned int id)
         return;
     }
 
-    for (unsigned int i = 0; i < NBHotel; i++)
+    unsigned int i;
+    for (i = 0; i < NBHotel; i++)
     {
         if (THotel[i].idHotel == id)
         {
@@ -142,8 +123,10 @@ void AfficherHotel(unsigned int id)
             printf("Site Web: %s\n", THotel[i].siteWebHotel);
             printf("Nombre d'étoiles: %u\n", THotel[i].nbrEtoil);
             printf("-----------------------------\n");
+            return;
         }
     }
+    printf("Aucun hôtel trouvé avec l'ID %u.\n", id);
 }
 
 void AfficherHotels()
@@ -154,7 +137,8 @@ void AfficherHotels()
         return;
     }
 
-    for (unsigned int i = 0; i < NBHotel; i++)
+    unsigned int i;
+    for (i = 0; i < NBHotel; i++)
     {
         printf("-----------------------------\n");
         printf("Hôtel ID: %u\n", THotel[i].idHotel);
@@ -178,29 +162,54 @@ void SupprimerHotel(unsigned int id)
         return;
     }
 
-    for (unsigned int i = 0; i < NBHotel; i++)
+    unsigned int i;
+    int found = 0;
+    for (i = 0; i < NBHotel; i++)
     {
         if (THotel[i].idHotel == id)
         {
-            // Shift all subsequent hotels to the left
-            for (unsigned int j = i; j < NBHotel - 1; j++)
-            {
-                THotel[j] = THotel[j + 1];
-            }
-
-            // Reduce the count and reallocate memory
-            NBHotel--;
-            THotel = realloc(THotel, NBHotel * sizeof(Hotel));
-            if (THotel == NULL && NBHotel > 0)
-            {
-                printf("Erreur d'allocation mémoire.\n");
-            }
-            printf("Hôtel ID %u supprimé avec succès.\n", id);
-            return;
+            found = 1;
+            break;
         }
     }
 
-    printf("Hôtel avec ID %u non trouvé.\n", id);
+    if (!found)
+    {
+        printf("Hôtel avec ID %u non trouvé.\n", id);
+        return;
+    }
+
+    // Libérer la mémoire des chaînes
+    free(THotel[i].nomHotel);
+    free(THotel[i].adresseHotel);
+    free(THotel[i].villeHotel);
+    free(THotel[i].paysHotel);
+    free(THotel[i].telHotel);
+    free(THotel[i].emailHotel);
+    free(THotel[i].siteWebHotel);
+
+    // Déplacer les éléments suivants
+    for (unsigned int j = i; j < NBHotel - 1; j++)
+    {
+        THotel[j] = THotel[j + 1];
+    }
+
+    NBHotel--;
+    if (NBHotel > 0)
+    {
+        Hotel *temp = realloc(THotel, NBHotel * sizeof(Hotel));
+        if (temp != NULL)
+        {
+            THotel = temp;
+        }
+    }
+    else
+    {
+        free(THotel);
+        THotel = NULL;
+    }
+
+    printf("Hôtel ID %u supprimé avec succès.\n", id);
 }
 
 void ModifierHotel(unsigned int id)
@@ -211,51 +220,58 @@ void ModifierHotel(unsigned int id)
         return;
     }
 
-    for (unsigned int i = 0; i < NBHotel; i++)
+    unsigned int i;
+    int found = 0;
+    for (i = 0; i < NBHotel; i++)
     {
         if (THotel[i].idHotel == id)
         {
-            printf("Modifier les informations de l'hôtel ID %u:\n", id);
-
-            printf("Nom actuel: %s\n", THotel[i].nomHotel);
-            printf("Nouveau nom: ");
-            THotel[i].nomHotel = SaisirChaine();
-
-            printf("Adresse actuelle: %s\n", THotel[i].adresseHotel);
-            printf("Nouvelle adresse: ");
-            THotel[i].adresseHotel = SaisirChaine();
-
-            printf("Ville actuelle: %s\n", THotel[i].villeHotel);
-            printf("Nouvelle ville: ");
-            THotel[i].villeHotel = SaisirChaine();
-
-            printf("Pays actuel: %s\n", THotel[i].paysHotel);
-            printf("Nouveau pays: ");
-            THotel[i].paysHotel = SaisirChaine();
-
-            printf("Téléphone actuel: %s\n", THotel[i].telHotel);
-            printf("Nouveau téléphone: ");
-            THotel[i].telHotel = SaisirChaine();
-
-            printf("Email actuel: %s\n", THotel[i].emailHotel);
-            printf("Nouvel email: ");
-            THotel[i].emailHotel = SaisirChaine();
-
-            printf("Site Web actuel: %s\n", THotel[i].siteWebHotel);
-            printf("Nouveau site web: ");
-            THotel[i].siteWebHotel = SaisirChaine();
-
-            printf("Nombre d'étoiles actuel: %u\n", THotel[i].nbrEtoil);
-            printf("Nouveau nombre d'étoiles: ");
-            scanf("%u", &THotel[i].nbrEtoil);
-            getchar();
-
-            printf("Hôtel ID %u modifié avec succès.\n", id);
-            return;
+            found = 1;
+            break;
         }
     }
 
-    printf("Hôtel avec ID %u non trouvé.\n", id);
+    if (!found)
+    {
+        printf("Hôtel avec ID %u non trouvé.\n", id);
+        return;
+    }
+
+    printf("Modifier les informations de l'hôtel ID %u:\n", id);
+
+    printf("Nom actuel: %s\nNouveau nom: ", THotel[i].nomHotel);
+    free(THotel[i].nomHotel);
+    THotel[i].nomHotel = SaisirChaine();
+
+    printf("Adresse actuelle: %s\nNouvelle adresse: ", THotel[i].adresseHotel);
+    free(THotel[i].adresseHotel);
+    THotel[i].adresseHotel = SaisirChaine();
+
+    printf("Ville actuelle: %s\nNouvelle ville: ", THotel[i].villeHotel);
+    free(THotel[i].villeHotel);
+    THotel[i].villeHotel = SaisirChaine();
+
+    printf("Pays actuel: %s\nNouveau pays: ", THotel[i].paysHotel);
+    free(THotel[i].paysHotel);
+    THotel[i].paysHotel = SaisirChaine();
+
+    printf("Téléphone actuel: %s\nNouveau téléphone: ", THotel[i].telHotel);
+    free(THotel[i].telHotel);
+    THotel[i].telHotel = SaisirChaine();
+
+    printf("Email actuel: %s\nNouvel email: ", THotel[i].emailHotel);
+    free(THotel[i].emailHotel);
+    THotel[i].emailHotel = SaisirChaine();
+
+    printf("Site Web actuel: %s\nNouveau site web: ", THotel[i].siteWebHotel);
+    free(THotel[i].siteWebHotel);
+    THotel[i].siteWebHotel = SaisirChaine();
+
+    printf("Nombre d'étoiles actuel: %u\nNouveau nombre d'étoiles: ", THotel[i].nbrEtoil);
+    scanf("%u", &THotel[i].nbrEtoil);
+    getchar();
+
+    printf("Hôtel ID %u modifié avec succès.\n", id);
 }
 
 int compareById(const void *a, const void *b)
@@ -310,7 +326,9 @@ void RechercherHotelParNom(const char *nom)
         return;
     }
 
-    for (unsigned int i = 0; i < NBHotel; i++)
+    unsigned int i;
+    int found = 0;
+    for (i = 0; i < NBHotel; i++)
     {
         if (strcmp(THotel[i].nomHotel, nom) == 0)
         {
@@ -326,10 +344,14 @@ void RechercherHotelParNom(const char *nom)
             printf("Site Web: %s\n", THotel[i].siteWebHotel);
             printf("Nombre d'étoiles: %u\n", THotel[i].nbrEtoil);
             printf("-----------------------------\n");
-            return;
+            found = 1;
+            break;
         }
     }
-    printf("Aucun hôtel trouvé avec le nom %s.\n", nom);
+    if (!found)
+    {
+        printf("Aucun hôtel trouvé avec le nom %s.\n", nom);
+    }
 }
 
 void AfficherHotelsParVille(const char *ville)
@@ -340,8 +362,9 @@ void AfficherHotelsParVille(const char *ville)
         return;
     }
 
+    unsigned int i;
     int found = 0;
-    for (unsigned int i = 0; i < NBHotel; i++)
+    for (i = 0; i < NBHotel; i++)
     {
         if (strcmp(THotel[i].villeHotel, ville) == 0)
         {
@@ -374,8 +397,9 @@ void AfficherHotelsParEtoiles(unsigned int etoiles)
         return;
     }
 
+    unsigned int i;
     int found = 0;
-    for (unsigned int i = 0; i < NBHotel; i++)
+    for (i = 0; i < NBHotel; i++)
     {
         if (THotel[i].nbrEtoil == etoiles)
         {
@@ -409,9 +433,9 @@ void SauvegarderHotelsDansFichier(const char *nomFichier)
         return;
     }
 
-    for (unsigned int i = 0; i < NBHotel; i++)
+    unsigned int i;
+    for (i = 0; i < NBHotel; i++)
     {
-        // Save the data in the format: id$nom$adresse$ville$pays$tel$email$siteWeb$nbrEtoiles
         fprintf(fichier, "%u$%s$%s$%s$%s$%s$%s$%s$%u\n",
                 THotel[i].idHotel,
                 THotel[i].nomHotel,
@@ -452,6 +476,7 @@ void Menu_Hotel()
         printf("0. Quitter\n");
         printf("Votre choix: ");
         scanf("%u", &choice);
+        getchar(); // Pour consommer le '\n' restant
 
         switch (choice)
         {
@@ -461,6 +486,7 @@ void Menu_Hotel()
         case 2:
             printf("Entrez l'ID de l'hôtel à afficher: ");
             scanf("%u", &id);
+            getchar();
             AfficherHotel(id);
             break;
         case 3:
@@ -469,11 +495,13 @@ void Menu_Hotel()
         case 4:
             printf("Entrez l'ID de l'hôtel à supprimer: ");
             scanf("%u", &id);
+            getchar();
             SupprimerHotel(id);
             break;
         case 5:
             printf("Entrez l'ID de l'hôtel à modifier: ");
             scanf("%u", &id);
+            getchar();
             ModifierHotel(id);
             break;
         case 6:
@@ -490,20 +518,24 @@ void Menu_Hotel()
             break;
         case 10:
             printf("Entrez le nom de l'hôtel à rechercher: ");
-            scanf("%s", nom);
+            fgets(nom, sizeof(nom), stdin);
+            nom[strcspn(nom, "\n")] = '\0';
             RechercherHotelParNom(nom);
             break;
         case 11:
             printf("Entrez la ville: ");
-            scanf("%s", ville);
+            fgets(ville, sizeof(ville), stdin);
+            ville[strcspn(ville, "\n")] = '\0';
             AfficherHotelsParVille(ville);
             break;
         case 12:
             printf("Entrez le nombre d'étoiles: ");
             scanf("%u", &etoiles);
+            getchar();
             AfficherHotelsParEtoiles(etoiles);
             break;
         case 0:
+            SauvegarderHotelsDansFichier("data_hotel");
             printf("Au revoir!\n");
             break;
         default:

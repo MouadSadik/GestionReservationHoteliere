@@ -1,5 +1,5 @@
-#include"Chambre.h"
-#include"Hotel.h"
+#include "Chambre.h"
+#include "Hotel.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -26,25 +26,25 @@ void ChargerChambresDepuisFichier(const char *filename)
         }
 
         char *token = strtok(line, "$");
-        TChambre[NBChambre - 1].idChambre = atoi(token);
+        if (token) TChambre[NBChambre - 1].idChambre = atoi(token);
 
         token = strtok(NULL, "$");
-        TChambre[NBChambre - 1].idHotel = atoi(token);
+        if (token) TChambre[NBChambre - 1].idHotel = atoi(token);
 
         token = strtok(NULL, "$");
-        TChambre[NBChambre - 1].numeroChambre = atoi(token);
+        if (token) TChambre[NBChambre - 1].numeroChambre = atoi(token);
 
         token = strtok(NULL, "$");
-        TChambre[NBChambre - 1].typeChambre = strdup(token);
+        if (token) TChambre[NBChambre - 1].typeChambre = strdup(token);
 
         token = strtok(NULL, "$");
-        TChambre[NBChambre - 1].capacite = atoi(token);
+        if (token) TChambre[NBChambre - 1].capacite = atoi(token);
 
         token = strtok(NULL, "$");
-        TChambre[NBChambre - 1].etage = atoi(token);
+        if (token) TChambre[NBChambre - 1].etage = atoi(token);
 
         token = strtok(NULL, "$");
-        TChambre[NBChambre - 1].prixChambre = atof(token);
+        if (token) TChambre[NBChambre - 1].prixChambre = atof(token);
     }
 
     fclose(file);
@@ -55,12 +55,17 @@ void AjouterChambre()
 {
     unsigned int idHotel;
     printf("ID de l'hôtel: ");
-    scanf("%u", &idHotel);
+    if (scanf("%u", &idHotel) != 1) {
+        printf("Saisie invalide.\n");
+        while (getchar() != '\n'); // Vide le buffer
+        return;
+    }
 
     int hotelExiste = 0;
-    for(int i = 0; i < NBHotel; i++)
+    unsigned int i;
+    for (i = 0; i < NBHotel; i++)
     {
-        if(idHotel == THotel[i].idHotel)
+        if (idHotel == THotel[i].idHotel)
         {
             hotelExiste = 1;
             break;
@@ -73,13 +78,14 @@ void AjouterChambre()
         return;
     }
 
-    NBChambre++;
-    TChambre = realloc(TChambre, NBChambre * sizeof(Chambre));
-    if (TChambre == NULL)
+    Chambre *temp = realloc(TChambre, (NBChambre + 1) * sizeof(Chambre));
+    if (temp == NULL)
     {
         printf("Erreur d'allocation mémoire.\n");
         return;
     }
+    TChambre = temp;
+    NBChambre++;
 
     TChambre[NBChambre - 1].idChambre = CChambre++;
     TChambre[NBChambre - 1].idHotel = idHotel;
@@ -110,7 +116,8 @@ void AfficherChambres()
         return;
     }
 
-    for (unsigned int i = 0; i < NBChambre; i++)
+    unsigned int i;
+    for (i = 0; i < NBChambre; i++)
     {
         printf("-----------------------------\n");
         printf("Chambre ID: %u\n", TChambre[i].idChambre);
@@ -133,7 +140,8 @@ void SauvegarderChambresDansFichier(const char *filename)
         return;
     }
 
-    for (unsigned int i = 0; i < NBChambre; i++)
+    unsigned int i;
+    for (i = 0; i < NBChambre; i++)
     {
         fprintf(file, "%u$%u$%u$%s$%u$%u$%.2lf\n",
                 TChambre[i].idChambre,
@@ -149,11 +157,11 @@ void SauvegarderChambresDansFichier(const char *filename)
     printf("Données des chambres sauvegardées avec succès dans %s\n", filename);
 }
 
-
 void ModifyChambre(unsigned int id)
 {
     int index = -1;
-    for (unsigned int i = 0; i < NBChambre; i++)
+    unsigned int i;
+    for (i = 0; i < NBChambre; i++)
     {
         if (TChambre[i].idChambre == id)
         {
@@ -164,7 +172,7 @@ void ModifyChambre(unsigned int id)
 
     if (index == -1)
     {
-        printf("Erreur : Aucun chambre trouvée avec l'ID %u.\n", id);
+        printf("Erreur : Aucune chambre trouvée avec l'ID %u.\n", id);
         return;
     }
 
@@ -189,8 +197,6 @@ void ModifyChambre(unsigned int id)
     printf("Chambre ID %u modifiée avec succès.\n", id);
 }
 
-
-
 void SupprimerChambre()
 {
     unsigned int id;
@@ -198,7 +204,8 @@ void SupprimerChambre()
     scanf("%u", &id);
 
     int index = -1;
-    for (unsigned int i = 0; i < NBChambre; i++)
+    unsigned int i;
+    for (i = 0; i < NBChambre; i++)
     {
         if (TChambre[i].idChambre == id)
         {
@@ -209,28 +216,40 @@ void SupprimerChambre()
 
     if (index == -1)
     {
-        printf("Erreur : Aucun chambre trouvée avec l'ID %u.\n", id);
+        printf("Erreur : Aucune chambre trouvée avec l'ID %u.\n", id);
         return;
     }
 
-    free(TChambre[index].typeChambre); 
+    free(TChambre[index].typeChambre);
 
-    for (unsigned int i = index; i < NBChambre - 1; i++)
+    for (i = index; i < NBChambre - 1; i++)
     {
         TChambre[i] = TChambre[i + 1];
     }
 
     NBChambre--;
-    TChambre = realloc(TChambre, NBChambre * sizeof(Chambre));
+    if (NBChambre > 0)
+    {
+        Chambre *temp = realloc(TChambre, NBChambre * sizeof(Chambre));
+        if (temp != NULL)
+        {
+            TChambre = temp;
+        }
+    }
+    else
+    {
+        free(TChambre);
+        TChambre = NULL;
+    }
 
     printf("Chambre ID %u supprimée avec succès.\n", id);
 }
 
-
 void RechercherChambreParTypeChambre(char *typeChambre)
 {
     int found = 0;
-    for (unsigned int i = 0; i < NBChambre; i++)
+    unsigned int i;
+    for (i = 0; i < NBChambre; i++)
     {
         if (strcmp(TChambre[i].typeChambre, typeChambre) == 0)
         {
@@ -246,11 +265,11 @@ void RechercherChambreParTypeChambre(char *typeChambre)
     }
 }
 
-
 void RechercherChambreParEtage(unsigned int etage)
 {
     int found = 0;
-    for (unsigned int i = 0; i < NBChambre; i++)
+    unsigned int i;
+    for (i = 0; i < NBChambre; i++)
     {
         if (TChambre[i].etage == etage)
         {
@@ -266,11 +285,11 @@ void RechercherChambreParEtage(unsigned int etage)
     }
 }
 
-
 void RechercherChambreParPrixChambre(double prixChambre)
 {
     int found = 0;
-    for (unsigned int i = 0; i < NBChambre; i++)
+    unsigned int i;
+    for (i = 0; i < NBChambre; i++)
     {
         if (TChambre[i].prixChambre <= prixChambre)
         {
@@ -376,14 +395,8 @@ void Menu_Tri()
         default:
             printf("Choix invalide, réessayez.\n");
         }
-    } while (1);
+    } while (choix != 6);
 }
-
-
-
-
-
-
 
 void Menu_Chambre()
 {
@@ -454,7 +467,5 @@ void Menu_Chambre()
         default:
             printf("Choix invalide, réessayez.\n");
         }
-    } while (1);
+    } while (choix != 9);
 }
-
-

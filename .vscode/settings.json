@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "Client.C": "cpp",
-        "chaine.h": "c"
+        "chaine.h": "c",
+        "hotel.h": "c"
     }
 }
