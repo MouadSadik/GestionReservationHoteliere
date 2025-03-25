@@ -14,3 +14,4 @@ struct client {
 };
 typedef struct client Client;
 
+void Menu_Client();
